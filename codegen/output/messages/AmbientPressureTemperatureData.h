@@ -1,7 +1,7 @@
 // Codegen file. Do not edit manually!
 
-#ifndef EDDA_MESSAGES_AMBIENTPRESSURESENSORDATA_H
-#define EDDA_MESSAGES_AMBIENTPRESSURESENSORDATA_H
+#ifndef EDDA_MESSAGES_AMBIENTPRESSURETEMPERATUREDATA_H
+#define EDDA_MESSAGES_AMBIENTPRESSURETEMPERATUREDATA_H
 
 #include <stdint.h>;
 #include <limits.h>;
@@ -10,7 +10,7 @@
 #include "../packers.h";
 
 namespace EddaCAN {
-  class alignas(8) AmbientPressureSensorData_Msg {
+  class alignas(8) AmbientPressureTemperatureData_DataType {
     private:
       uint32_t pressure;
       uint16_t temperature;

@@ -1,4 +1,4 @@
-export abstract class CANBusMessageField {
+export abstract class CANBusField {
   privateFields: string[];
   publicFields: string[];
   publicSetters: string[];

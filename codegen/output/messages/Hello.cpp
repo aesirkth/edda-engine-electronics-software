@@ -8,26 +8,26 @@
 #include "Hello.h";
 
 namespace EddaCAN {
-  void Hello_Msg::set_source(uint8_t value) {
+  void Hello_DataType::set_source(uint8_t value) {
     source = value;
   }
-  void Hello_Msg::set_powerMode(PowerMode value) {
+  void Hello_DataType::set_powerMode(PowerMode value) {
     powerMode = value;
   }
-  void Hello_Msg::set_debugMode(DebugMode value) {
+  void Hello_DataType::set_debugMode(DebugMode value) {
     debugMode = value;
   }
 
-  uint8_t Hello_Msg::get_source() {
+  uint8_t Hello_DataType::get_source() {
     return source;
   }
-  PowerMode Hello_Msg::get_powerMode() {
+  PowerMode Hello_DataType::get_powerMode() {
     return powerMode;
   }
-  DebugMode Hello_Msg::get_debugMode() {
+  DebugMode Hello_DataType::get_debugMode() {
     return debugMode;
   }
 
-  static_assert((sizeof(Hello_Msg) <= 8), "sizeof(Hello_Msg) must be less than 8 bytes!");
+  static_assert((sizeof(Hello_DataType) <= 8), "sizeof(Hello_DataType) must be less than 8 bytes!");
   
 }

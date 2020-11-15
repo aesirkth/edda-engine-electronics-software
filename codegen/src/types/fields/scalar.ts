@@ -1,10 +1,10 @@
-import { CANBusMessageField } from "./abstract";
+import { CANBusField } from "./abstract";
 import { ScalarField } from "./types";
-import { getNativeType } from "../types/getNativeType";
+import { getNativeType } from "../../codegen/utils/getNativeType";
 import { makePacker } from "../utils/floatPack";
-import { encounteredEnums } from "../global";
+import { encounteredEnums } from "../../global";
 
-export class CANBusMessageScalarField extends CANBusMessageField {
+export class CANBusScalarField extends CANBusField {
   readonly nativeType: string;
   readonly getSetType: string;
 

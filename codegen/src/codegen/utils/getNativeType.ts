@@ -3,7 +3,7 @@ import {
   UnsignedIntegerFieldType,
   SignedIntegerFieldType,
   IDFieldtype,
-} from "../fields/types";
+} from "../../types/fields/types";
 
 export function getNativeType(
   type:

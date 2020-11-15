@@ -10,7 +10,7 @@
 #include "../packers.h";
 
 namespace EddaCAN {
-  class alignas(8) Hello_Msg {
+  class alignas(8) Hello_DataType {
     private:
       uint8_t source;
       PowerMode powerMode;

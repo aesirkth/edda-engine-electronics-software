@@ -1,5 +1,5 @@
 import { AbstractCodegenBlock } from "./block";
-import { indent } from "./util/indent";
+import { indent } from "../formatting/indent";
 
 export class CodegenNamespace extends AbstractCodegenBlock {
   constructor(

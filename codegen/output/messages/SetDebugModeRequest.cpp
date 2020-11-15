@@ -8,14 +8,14 @@
 #include "SetDebugModeRequest.h";
 
 namespace EddaCAN {
-  void SetDebugModeRequest_Msg::set_mode(PowerMode value) {
+  void SetDebugModeRequest_DataType::set_mode(DebugMode value) {
     mode = value;
   }
 
-  PowerMode SetDebugModeRequest_Msg::get_mode() {
+  DebugMode SetDebugModeRequest_DataType::get_mode() {
     return mode;
   }
 
-  static_assert((sizeof(SetDebugModeRequest_Msg) <= 8), "sizeof(SetDebugModeRequest_Msg) must be less than 8 bytes!");
+  static_assert((sizeof(SetDebugModeRequest_DataType) <= 8), "sizeof(SetDebugModeRequest_DataType) must be less than 8 bytes!");
   
 }

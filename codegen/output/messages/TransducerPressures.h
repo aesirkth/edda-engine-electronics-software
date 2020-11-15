@@ -10,7 +10,7 @@
 #include "../packers.h";
 
 namespace EddaCAN {
-  class alignas(8) TransducerPressures_Msg {
+  class alignas(8) TransducerPressures_DataType {
     private:
       uint32_t pressures_0;
       uint32_t pressures_1;

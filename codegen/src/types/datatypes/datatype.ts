@@ -1,25 +1,25 @@
-import { CANBusMessageField } from "../fields/abstract";
+import { CANBusField } from "../fields/abstract";
 import { Field } from "../fields/types";
-import { CANBusMessageArrayField } from "../fields/array";
-import { CANBusMessageScalarField } from "../fields/scalar";
+import { CANBusArrayField } from "../fields/array";
+import { CANBusScalarField } from "../fields/scalar";
 
-export class CANBusMessageData {
-  protected fields: CANBusMessageField[];
+export class CANBusDataType {
+  protected fields: CANBusField[];
 
   constructor(readonly title: string, inputFields: Record<string, Field>) {
     this.fields = [];
     for (const name in inputFields) {
       const field = inputFields[name];
       if (field.type === "array") {
-        this.fields.push(new CANBusMessageArrayField(name, field));
+        this.fields.push(new CANBusArrayField(name, field));
       } else {
-        this.fields.push(new CANBusMessageScalarField(name, field));
+        this.fields.push(new CANBusScalarField(name, field));
       }
     }
   }
 
   get headerString() {
-    const className = `${this.title}_Msg`;
+    const className = `${this.title}_DataType`;
     let strings = [
       `class alignas(8) ${className} {`,
       `  private:`,
@@ -48,14 +48,14 @@ export class CANBusMessageData {
   }
 
   get string() {
-    const className = `${this.title}_Msg`;
+    const className = `${this.title}_DataType`;
     let strings = [
       ...this.fields
         .flatMap((field) => field.publicSetters)
         .map(
           (str) =>
             `${str.replace(/^[A-z0-9]+(\s+)/g, (str, args) => {
-              return `${str}${this.title}_Msg::`;
+              return `${str}${this.title}_DataType::`;
             })}`
         ),
       "",
@@ -64,7 +64,7 @@ export class CANBusMessageData {
         .map(
           (str) =>
             `${str.replace(/^([A-z0-9]+)(\s+)/g, (str, args) => {
-              return `${str}${this.title}_Msg::`;
+              return `${str}${this.title}_DataType::`;
             })}`
         ),
       "",

@@ -10,7 +10,7 @@
 #include "../packers.h";
 
 namespace EddaCAN {
-  class alignas(8) MAX31850KColdJunctionData_Msg {
+  class alignas(8) MAX31850KColdJunctionData_DataType {
     private:
       uint8_t temperatures_0;
       uint8_t temperatures_1;

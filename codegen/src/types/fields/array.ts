@@ -1,9 +1,9 @@
-import { CANBusMessageField } from "./abstract";
-import { CANBusMessageScalarField } from "./scalar";
+import { CANBusField } from "./abstract";
+import { CANBusScalarField } from "./scalar";
 import { ArrayField } from "./types";
 
-export class CANBusMessageArrayField extends CANBusMessageField {
-  scalarFields: CANBusMessageScalarField[];
+export class CANBusArrayField extends CANBusField {
+  scalarFields: CANBusScalarField[];
 
   constructor(public readonly name: string, protected field: ArrayField) {
     super();
@@ -12,7 +12,7 @@ export class CANBusMessageArrayField extends CANBusMessageField {
 
     for (let i = 0; i < this.field.count; i++) {
       this.scalarFields.push(
-        new CANBusMessageScalarField(`${this.name}_${i}`, field.field)
+        new CANBusScalarField(`${this.name}_${i}`, field.field)
       );
     }
 

@@ -10,15 +10,15 @@
 #include "../packers.h";
 
 namespace EddaCAN {
-  class alignas(8) SetDebugModeRequest_Msg {
+  class alignas(8) SetDebugModeRequest_DataType {
     private:
-      PowerMode mode;
+      DebugMode mode;
 
     public:
 
-      void set_mode(PowerMode value);
+      void set_mode(DebugMode value);
 
-      PowerMode get_mode();
+      DebugMode get_mode();
 
   };
   

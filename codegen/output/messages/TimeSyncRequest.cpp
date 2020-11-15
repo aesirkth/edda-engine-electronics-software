@@ -8,26 +8,26 @@
 #include "TimeSyncRequest.h";
 
 namespace EddaCAN {
-  void TimeSyncRequest_Msg::set_source(uint8_t value) {
+  void TimeSyncRequest_DataType::set_source(uint8_t value) {
     source = value;
   }
-  void TimeSyncRequest_Msg::set_requestIdentifier(uint16_t value) {
+  void TimeSyncRequest_DataType::set_requestIdentifier(uint16_t value) {
     requestIdentifier = value;
   }
-  void TimeSyncRequest_Msg::set_initiatedAtMicros(uint32_t value) {
+  void TimeSyncRequest_DataType::set_initiatedAtMicros(uint32_t value) {
     initiatedAtMicros = value;
   }
 
-  uint8_t TimeSyncRequest_Msg::get_source() {
+  uint8_t TimeSyncRequest_DataType::get_source() {
     return source;
   }
-  uint16_t TimeSyncRequest_Msg::get_requestIdentifier() {
+  uint16_t TimeSyncRequest_DataType::get_requestIdentifier() {
     return requestIdentifier;
   }
-  uint32_t TimeSyncRequest_Msg::get_initiatedAtMicros() {
+  uint32_t TimeSyncRequest_DataType::get_initiatedAtMicros() {
     return initiatedAtMicros;
   }
 
-  static_assert((sizeof(TimeSyncRequest_Msg) <= 8), "sizeof(TimeSyncRequest_Msg) must be less than 8 bytes!");
+  static_assert((sizeof(TimeSyncRequest_DataType) <= 8), "sizeof(TimeSyncRequest_DataType) must be less than 8 bytes!");
   
 }

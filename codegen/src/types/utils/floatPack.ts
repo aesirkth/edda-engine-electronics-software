@@ -2,7 +2,7 @@ import {
   UnsignedIntegerFieldType,
   FloatingPointFieldType,
 } from "../fields/types";
-import { getNativeType } from "../types/getNativeType";
+import { getNativeType } from "../../codegen/utils/getNativeType";
 
 export type Packer = {
   packName: string;

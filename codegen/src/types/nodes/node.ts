@@ -1,5 +1,5 @@
-import { CANBusMessageData } from "../datatypes/datatype";
-import { attachedMessages, attachedNames } from "../global";
+import { CANBusDataType } from "../datatypes/datatype";
+import { attachedMessages, attachedNames } from "../../global";
 
 export class CANBusNode {
   constructor(id: number);
@@ -7,7 +7,7 @@ export class CANBusNode {
 
   attachMessage(
     messageId: number,
-    message: CANBusMessageData,
+    message: CANBusDataType,
     namePostfix?: string
   ) {
     attachedMessages.add(message);

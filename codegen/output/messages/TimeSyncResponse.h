@@ -10,7 +10,7 @@
 #include "../packers.h";
 
 namespace EddaCAN {
-  class alignas(8) TimeSyncResponse_Msg {
+  class alignas(8) TimeSyncResponse_DataType {
     private:
       uint8_t destination;
       uint16_t requestIdentifier;
