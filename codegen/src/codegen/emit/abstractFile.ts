@@ -3,11 +3,11 @@ import { relative, dirname, basename } from "path";
 export abstract class AbstractCodegenFile {
   // Generate an import to a file
   private static generateImport(filename: string) {
-    return `#include "${filename.replace(/\\/g, "/")}";`;
+    return `#include "${filename.replace(/\\/g, "/")}"`;
   }
   // Generate an import to a file
   private static generateBracketImport(filename: string) {
-    return `#include <${filename.replace(/\\/g, "/")}>;`;
+    return `#include <${filename.replace(/\\/g, "/")}>`;
   }
 
   constructor(readonly fileName: string) {}

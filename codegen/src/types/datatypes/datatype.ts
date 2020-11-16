@@ -25,12 +25,12 @@ export class CANBusDataType {
       `  private:`,
       ...this.fields
         .flatMap((field) => field.privateFields)
-        .map((str) => `    ${str};`),
+        .map((str) => `    ${str} __attribute__((packed));`),
       "",
       `  public:`,
       ...this.fields
         .flatMap((field) => field.publicFields)
-        .map((str) => `    ${str};`),
+        .map((str) => `    ${str} __attribute__((packed));`),
       "",
       ...this.fields
         .flatMap((field) => field.publicSetterSignatures)

@@ -3,7 +3,7 @@
 #ifndef EDDA_ENUMS_H
 #define EDDA_ENUMS_H
 
-#include <stdint.h>;
+#include <stdint.h>
 
 namespace EddaCAN {
   enum struct PowerMode: uint8_t {

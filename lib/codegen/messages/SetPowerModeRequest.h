@@ -3,16 +3,16 @@
 #ifndef EDDA_MESSAGES_SETPOWERMODEREQUEST_H
 #define EDDA_MESSAGES_SETPOWERMODEREQUEST_H
 
-#include <stdint.h>;
-#include <limits.h>;
-#include <string.h>;
-#include "../enums.h";
-#include "../packers.h";
+#include <stdint.h>
+#include <limits.h>
+#include <string.h>
+#include "../enums.h"
+#include "../packers.h"
 
 namespace EddaCAN {
   class alignas(8) SetPowerModeRequest_DataType {
     private:
-      PowerMode mode;
+      PowerMode mode __attribute__((packed));
 
     public:
 

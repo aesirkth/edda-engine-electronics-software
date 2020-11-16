@@ -1,6 +1,6 @@
 import { CodegenTextBlock } from "./codegen/emit/textBlock";
 import { floatPackers, doublePackers } from "./types/utils/floatPack";
-import { rmdirSync } from "fs";
+import { rmdirSync, mkdirSync } from "fs";
 import { CodegenFile } from "./codegen/emit/file";
 import { CodegenNamespace } from "./codegen/emit/namespace";
 import { CodegenEnum } from "./codegen/emit/enum";
@@ -17,9 +17,12 @@ export function writeOutput() {
     );
   }
 
-  rmdirSync("./output", {
+  const outDir = "../lib/codegen";
+  rmdirSync(outDir, {
     recursive: true,
   });
+
+  mkdirSync(outDir);
 
   const packFile = new CodegenFile("./packers", [
     new CodegenNamespace("EddaCAN", packers),
@@ -54,14 +57,14 @@ export function writeOutput() {
     messageFiles.push(file);
   }
 
-  const rootFile = new CodegenFile("./index", []);
+  const rootFile = new CodegenFile("./codegen", []);
   rootFile.addDependency(enumFile);
   rootFile.addDependency(packFile);
   for (const msgFile of messageFiles) {
     rootFile.addDependency(msgFile);
   }
 
-  emitFiles("./output", enumFile, packFile, ...messageFiles, rootFile);
+  emitFiles(outDir, enumFile, packFile, ...messageFiles, rootFile);
 
   console.log("Emitted files");
 }

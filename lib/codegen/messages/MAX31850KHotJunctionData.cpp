@@ -1,11 +1,11 @@
 // Codegen file. Do not edit manually!
 
-#include <stdint.h>;
-#include <limits.h>;
-#include <string.h>;
-#include "../enums.h";
-#include "../packers.h";
-#include "MAX31850KHotJunctionData.h";
+#include <stdint.h>
+#include <limits.h>
+#include <string.h>
+#include "../enums.h"
+#include "../packers.h"
+#include "MAX31850KHotJunctionData.h"
 
 namespace EddaCAN {
   void MAX31850KHotJunctionData_DataType::set_temperatures_0(float value) {

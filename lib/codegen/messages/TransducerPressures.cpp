@@ -1,11 +1,11 @@
 // Codegen file. Do not edit manually!
 
-#include <stdint.h>;
-#include <limits.h>;
-#include <string.h>;
-#include "../enums.h";
-#include "../packers.h";
-#include "TransducerPressures.h";
+#include <stdint.h>
+#include <limits.h>
+#include <string.h>
+#include "../enums.h"
+#include "../packers.h"
+#include "TransducerPressures.h"
 
 namespace EddaCAN {
   void TransducerPressures_DataType::set_pressures_0(float value) {

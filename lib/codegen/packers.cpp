@@ -1,7 +1,7 @@
 // Codegen file. Do not edit manually!
 
-#include <stdint.h>;
-#include "packers.h";
+#include <stdint.h>
+#include "packers.h"
 
 namespace EddaCAN {
   inline uint16_t pack_float_into_uint16_t(float value, const float minValue, const float maxValue) {

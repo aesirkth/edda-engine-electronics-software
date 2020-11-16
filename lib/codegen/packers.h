@@ -3,7 +3,7 @@
 #ifndef EDDA_PACKERS_H
 #define EDDA_PACKERS_H
 
-#include <stdint.h>;
+#include <stdint.h>
 
 namespace EddaCAN {
   uint16_t pack_float_into_uint16_t(float value, const float minValue, const float maxValue);

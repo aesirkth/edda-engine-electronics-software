@@ -1,11 +1,11 @@
 // Codegen file. Do not edit manually!
 
-#include <stdint.h>;
-#include <limits.h>;
-#include <string.h>;
-#include "../enums.h";
-#include "../packers.h";
-#include "SetPowerModeRequest.h";
+#include <stdint.h>
+#include <limits.h>
+#include <string.h>
+#include "../enums.h"
+#include "../packers.h"
+#include "SetPowerModeRequest.h"
 
 namespace EddaCAN {
   void SetPowerModeRequest_DataType::set_mode(PowerMode value) {
