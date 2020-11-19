@@ -53,15 +53,15 @@ export function makePacker(
       break;
   }
 
-  const packDefinition = `inline ${packType} pack_float_into_${packType}(float value, const float minValue, const float maxValue) {
+  const packDefinition = `inline ${packType} ${packName}(${nativeType} value, const ${nativeType} minValue, const ${nativeType} maxValue) {
   if(value < minValue) { return 0; }
   if(value > maxValue) { return ${maxType}; }
 
-  float ratio = ((float) value - minValue) / (maxValue - minValue);
-  return 1 + (${packType}) ((float) (${maxType} - 2)) * ratio;
+  ${nativeType} ratio = ((${nativeType}) value - minValue) / (maxValue - minValue);
+  return 1 + (${packType}) ((${nativeType}) (${maxType} - 2)) * ratio;
 }`;
 
-  const unpackDefinition = `inline float unpack_${packType}_into_float(${packType} value, const float minValue, const float maxValue) {
+  const unpackDefinition = `inline ${nativeType} ${unpackName}(${packType} value, const ${nativeType} minValue, const ${nativeType} maxValue) {
   if(value <= 0) {
     return minValue - 1.0;
   }
@@ -69,12 +69,12 @@ export function makePacker(
     return maxValue + 1.0;
   }
 
-  float ratio = (float)(value - 1) / (float) (${maxType} - 2);
+  ${nativeType} ratio = (${nativeType})(value - 1) / (${nativeType}) (${maxType} - 2);
   return ratio * (maxValue - minValue) + minValue;
 }`;
 
-  const packHeader = `${packType} pack_float_into_${packType}(float value, const float minValue, const float maxValue);`;
-  const unpackHeader = `float unpack_${packType}_into_float(${packType} value, const float minValue, const float maxValue);`;
+  const packHeader = `${packType} ${packName}(${nativeType} value, const ${nativeType} minValue, const ${nativeType} maxValue);`;
+  const unpackHeader = `${nativeType} ${unpackName}(${packType} value, const ${nativeType} minValue, const ${nativeType} maxValue);`;
 
   const returnType: Packer = {
     packName,
