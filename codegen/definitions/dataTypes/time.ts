@@ -3,8 +3,7 @@ import { CANBusDataType } from "../../src/types/datatypes/datatype";
 export const timeSyncRequest_msg = new CANBusDataType("TimeSyncRequest", {
   source: { type: "id8" },
   requestIdentifier: { type: "uint8" },
-  initiatedAtMillis: { type: "uint32" },
-  initiatedAtMicros: { type: "uint16" },
+  currentMicros: { type: "uint32" },
 });
 
 export const timeSyncLatencyResponse_msg = new CANBusDataType(
@@ -12,8 +11,7 @@ export const timeSyncLatencyResponse_msg = new CANBusDataType(
   {
     destination: { type: "id8" },
     requestIdentifier: { type: "uint8" },
-    initiatedAtMillis: { type: "uint32" },
-    initiatedAtMicros: { type: "uint16" },
+    initiatorMicros: { type: "uint32" },
   }
 );
 
@@ -22,7 +20,7 @@ export const timeSyncTimeResponse_msg = new CANBusDataType(
   {
     destination: { type: "id8" },
     requestIdentifier: { type: "uint8" },
-    responseMillis: { type: "uint32" },
-    responseMicros: { type: "uint16" },
+    bits0through31: { type: "uint32" },
+    bits32through47: { type: "uint16" },
   }
 );

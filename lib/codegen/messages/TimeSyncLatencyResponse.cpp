@@ -14,11 +14,8 @@ namespace EddaCAN {
   void TimeSyncLatencyResponse_DataType::set_requestIdentifier(uint8_t value) {
     requestIdentifier = value;
   }
-  void TimeSyncLatencyResponse_DataType::set_initiatedAtMillis(uint32_t value) {
-    initiatedAtMillis = value;
-  }
-  void TimeSyncLatencyResponse_DataType::set_initiatedAtMicros(uint16_t value) {
-    initiatedAtMicros = value;
+  void TimeSyncLatencyResponse_DataType::set_initiatorMicros(uint32_t value) {
+    initiatorMicros = value;
   }
 
   uint8_t TimeSyncLatencyResponse_DataType::get_destination() {
@@ -27,11 +24,8 @@ namespace EddaCAN {
   uint8_t TimeSyncLatencyResponse_DataType::get_requestIdentifier() {
     return requestIdentifier;
   }
-  uint32_t TimeSyncLatencyResponse_DataType::get_initiatedAtMillis() {
-    return initiatedAtMillis;
-  }
-  uint16_t TimeSyncLatencyResponse_DataType::get_initiatedAtMicros() {
-    return initiatedAtMicros;
+  uint32_t TimeSyncLatencyResponse_DataType::get_initiatorMicros() {
+    return initiatorMicros;
   }
 
   static_assert((sizeof(TimeSyncLatencyResponse_DataType) <= 8), "sizeof(TimeSyncLatencyResponse_DataType) must be less than 8 bytes!");

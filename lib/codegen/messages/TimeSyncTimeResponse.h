@@ -14,20 +14,20 @@ namespace EddaCAN {
     private:
       uint8_t destination __attribute__((packed));
       uint8_t requestIdentifier __attribute__((packed));
-      uint32_t responseMillis __attribute__((packed));
-      uint16_t responseMicros __attribute__((packed));
+      uint32_t bits0through31 __attribute__((packed));
+      uint16_t bits32through47 __attribute__((packed));
 
     public:
 
       void set_destination(uint8_t value);
       void set_requestIdentifier(uint8_t value);
-      void set_responseMillis(uint32_t value);
-      void set_responseMicros(uint16_t value);
+      void set_bits0through31(uint32_t value);
+      void set_bits32through47(uint16_t value);
 
       uint8_t get_destination();
       uint8_t get_requestIdentifier();
-      uint32_t get_responseMillis();
-      uint16_t get_responseMicros();
+      uint32_t get_bits0through31();
+      uint16_t get_bits32through47();
 
   };
   
