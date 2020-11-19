@@ -3,21 +3,22 @@
 #include "codegen.h"
 #include <string.h>
 
-IntervalTimer canTimer;
-FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> myCan;
+#include "64bittime.h"
+#include "timeSync.h"
+#include "canTimeSync.h"
+#include "printNonNativeTypes.h"
 
 #define ONBOARD_LED_PIN 13
 #define VCC_LED_PIN 33
 
 #define CAN_RS_PIN 2
 
-#define TIMESYNC_REQUEST_RX_ID 1
-#define TIMESYNC_LATENCY_RESPONSE_RX_ID 2
-#define TIMESYNC_TIME_RESPONSE_RX_ID 3
+EddaCANTimeSync canTimeSync(1, 2, 3, 4, 5, 6);
 
-#define TIMESYNC_REQUEST_TX_ID 4
-#define TIMESYNC_LATENCY_RESPONSE_TX_ID 5
-#define TIMESYNC_TIME_RESPONSE_TX_ID 6
+IntervalTimer canTimer;
+FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> myCan;
+
+TimeSync timeSync;
 
 void canSniff(const CAN_message_t &msg);
 void checkEvents();
@@ -32,7 +33,6 @@ void setup() {
   myCan.setBaudRate(1000000);
   myCan.onReceive(canSniff);
   myCan.enableMBInterrupts();
-  
 
   pinMode(ONBOARD_LED_PIN, OUTPUT);
 
@@ -42,142 +42,79 @@ void setup() {
   canTimer.begin(checkEvents, 2500);
 }
 
-void canSniff(const CAN_message_t &msg) {
-}
-
-elapsedMillis sinceLastRequest;
-
 void checkEvents() {
   myCan.events();
 }
 
+elapsedMillis timeSinceLastRequest;
+bool lastLedNum = false;
+bool lastPrintNum = false;
+void loop() {
+  noInterrupts();
+  uint64_t timeNow = timeSync.getMicroseconds();
 
-volatile uint32_t currentRTT;
-volatile uint64_t currentTime;
-volatile double clockScaling = 1.0;
-volatile bool hasCurrentTime = false;
-elapsedMicros timeSinceLastTimeAssignment;
+  bool ledNum = (timeNow / 200000) % 2 == 0;
+  bool printNum = (timeNow / 1000000) % 2 == 0;
 
-void ext_output2(const CAN_message_t &msg){
-  if(msg.id == TIMESYNC_REQUEST_RX_ID) {
-    // Serial.println("== Got sync request ==");
-    EddaCAN::TimeSyncRequest_DataType syncRequest;
-    memcpy(&syncRequest, msg.buf, msg.len);
-
-    // Serial.print("source: "); Serial.println(syncRequest.get_source());
-    // Serial.print("requestIdentifier: "); Serial.println(syncRequest.get_requestIdentifier());
-    // Serial.print("initiatedAtMicros: "); Serial.println(syncRequest.get_initiatedAtMicros());
-
-    
-    EddaCAN::TimeSyncLatencyResponse_DataType latencyResponse;
-    latencyResponse.set_destination(syncRequest.get_source());
-    latencyResponse.set_requestIdentifier(syncRequest.get_requestIdentifier());
-    latencyResponse.set_initiatedAtMillis(syncRequest.get_initiatedAtMillis());
-    latencyResponse.set_initiatedAtMicros(syncRequest.get_initiatedAtMicros());
-
-    CAN_message_t msg;
-    msg.id = TIMESYNC_LATENCY_RESPONSE_TX_ID;
-    msg.len = sizeof(latencyResponse);
-    msg.seq = true;
-    memcpy(msg.buf, &latencyResponse, sizeof(latencyResponse));
-    
-    myCan.write(msg);
-
-    EddaCAN::TimeSyncTimeResponse_DataType timeResponse;
-    timeResponse.set_destination(syncRequest.get_source());
-    timeResponse.set_requestIdentifier(syncRequest.get_requestIdentifier());
-    uint32_t currentMillis = millis();
-    uint32_t currentMicros = micros();
-    timeResponse.set_responseMillis(currentMillis);
-    timeResponse.set_responseMicros(currentMicros % 1000);
-
-    msg.id = TIMESYNC_TIME_RESPONSE_TX_ID;
-    msg.len = sizeof(timeResponse);
-    msg.seq = true;
-    memcpy(msg.buf, &timeResponse, sizeof(timeResponse));
-    
-    myCan.write(msg);
+  if(ledNum != lastLedNum) {
+    digitalWrite(ONBOARD_LED_PIN, ledNum);
+    lastLedNum = ledNum;
   }
 
-  if(msg.id == TIMESYNC_LATENCY_RESPONSE_RX_ID) {
-    // Serial.println("== Got sync response ==");
-    EddaCAN::TimeSyncLatencyResponse_DataType latencyResponse;
-    memcpy(&latencyResponse, msg.buf, msg.len);
-
-    // Serial.print("destination: "); Serial.println(syncResponse.get_destination());
-    // Serial.print("requestIdentifier: "); Serial.println(syncResponse.get_requestIdentifier());
-    // Serial.print("initiatedAtMicros: "); Serial.println(syncResponse.get_initiatedAtMicros());
-    uint32_t millisLatency = millis() - latencyResponse.get_initiatedAtMillis();
-    uint32_t microsLatency = (micros() % 1000) - latencyResponse.get_initiatedAtMicros();
-    currentRTT = (uint32_t)millisLatency * 1000 + (uint32_t)microsLatency;
+  int delayTime = 2500;
+  switch(timeSync.getStatus()) {
+    case TimeSyncStatus::PendingRemoteTime:
+      delayTime = 250;
+      break;
+    case TimeSyncStatus::AcquiringSync:
+      delayTime = 250;
+      break;
+    case TimeSyncStatus::SyncedWithinMillisecond:
+      delayTime = 500;
+      break;
+    case TimeSyncStatus::Synced:
+      delayTime = 1000;
+      break;
   }
 
-  if(msg.id == TIMESYNC_TIME_RESPONSE_RX_ID) {
-    // Serial.println("== Got sync response ==");
-    EddaCAN::TimeSyncTimeResponse_DataType timeResponse;
-    memcpy(&timeResponse, msg.buf, msg.len);
+  if(timeSinceLastRequest > delayTime) {
+    canTimeSync.sendRequest([](auto a) { return myCan.write(a); });
+    timeSinceLastRequest = 0;
+  }
 
-    // Serial.print("destination: "); Serial.println(syncResponse.get_destination());
-    // Serial.print("requestIdentifier: "); Serial.println(syncResponse.get_requestIdentifier());
-    // Serial.print("initiatedAtMicros: "); Serial.println(syncResponse.get_initiatedAtMicros());
-    uint32_t millisTime = timeResponse.get_responseMillis();
-    uint32_t microsTime = timeResponse.get_responseMicros();
-
-    uint64_t newTime = (uint64_t)millisTime * 1000 + (uint64_t)microsTime + currentRTT / 2;
-
-    Serial.print("latency: "); Serial.println(currentRTT);
-    Serial.print("fetched time: "); Serial.println(newTime / 1.0e6, 10);
-
-    if(hasCurrentTime) {
-      uint64_t correctedTime = currentTime + (uint64_t)((double)timeSinceLastTimeAssignment * clockScaling);
-      int32_t drift = correctedTime - newTime;
-      Serial.print("time: "); Serial.println(correctedTime / 1.0e6, 10);
-      
-      int32_t scaleDrift = drift;
-      if(scaleDrift < -50) scaleDrift = -50;
-      if(scaleDrift > 50) scaleDrift = 50;
-
-      currentTime = correctedTime;
-      timeSinceLastTimeAssignment = 0;
-      clockScaling = 0.99 * clockScaling + 0.01 * (1.0 - scaleDrift * 1e-6);
-
-      Serial.print("drift: "); Serial.println(drift);
-      Serial.print("clockScaling: "); Serial.println(clockScaling, 10);
-    } else {
-      currentTime = newTime;
-      timeSinceLastTimeAssignment = 0;
-      clockScaling = 1.0;
-      hasCurrentTime = true;
+  if(printNum != lastPrintNum) {
+    switch(timeSync.getStatus()) {
+      case TimeSyncStatus::PendingRemoteTime:
+        Serial.println("PendingRemoteTime");
+        break;
+      case TimeSyncStatus::AcquiringSync:
+        Serial.println("AcquiringSync");
+        break;
+      case TimeSyncStatus::SyncedWithinMillisecond:
+        Serial.println("SyncedWithinMillisecond");
+        break;
+      case TimeSyncStatus::Synced:
+        Serial.println("Synced");
+        break;
     }
+    Serial.println("Remote: -");
+    Serial.print("Time: "); Serial.println(timeSync.getSeconds(), 8);
+    Serial.print("Deviation: "); Serial.println((int)timeSync.getDeviation());
+    Serial.print("Scaling Rate: "); Serial.println(timeSync.getScalingRate(), 10);
+    Serial.print("RTT: "); Serial.println(canTimeSync.getRTT());
+    lastPrintNum = printNum;
   }
+  interrupts();
 }
 
-void loop() {
-  if(sinceLastRequest > 1000) {
-    sinceLastRequest = 0;
-    digitalToggle(ONBOARD_LED_PIN);
+void canSniff(const CAN_message_t &msg) {
+}
 
-    EddaCAN::TimeSyncRequest_DataType syncRequest;
-    syncRequest.set_source(0);
-    syncRequest.set_requestIdentifier(0);
-    syncRequest.set_initiatedAtMillis(millis());
-    syncRequest.set_initiatedAtMicros(micros() % 1000);
 
-    CAN_message_t msg;
-    msg.id = TIMESYNC_REQUEST_TX_ID;
-    msg.len = sizeof(syncRequest);
-    msg.seq = true;
-    memcpy(msg.buf, &syncRequest, sizeof(syncRequest));
-    
-    myCan.write(msg);
-
-    delayMicroseconds(250);
+void ext_output2(const CAN_message_t &msg){
+  uint64_t remoteTime;
+  if(canTimeSync.processFrame(&remoteTime, timeSync, msg, [](auto a) { return myCan.write(a); })) {
+    timeSync.updateRemoteTime(remoteTime);
+    return;
   }
-
-  CAN_message_t msg2;
-  msg2.id = 100;
-  msg2.len = 8;
-  
-  myCan.write(msg2);
-  delayMicroseconds(1000);
 }
